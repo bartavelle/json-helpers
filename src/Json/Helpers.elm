@@ -390,7 +390,7 @@ decodeSet d =
 required : String -> Json.Decode.Decoder a -> Json.Decode.Decoder (a -> b) -> Json.Decode.Decoder b
 required key valDecoder decoder = custom (Json.Decode.field key valDecoder) decoder
 
-{-| Decodes a nullable field. -}
+{-| Decodes a field that can be absent from a record. -}
 fnullable : String -> Json.Decode.Decoder a -> Json.Decode.Decoder (Maybe a -> b) -> Json.Decode.Decoder b
 fnullable key valDecoder decoder = custom (Json.Decode.nullable (Json.Decode.field key valDecoder)) decoder
 
