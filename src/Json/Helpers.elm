@@ -390,9 +390,12 @@ decodeSet d =
 required : String -> Json.Decode.Decoder a -> Json.Decode.Decoder (a -> b) -> Json.Decode.Decoder b
 required key valDecoder decoder = custom (Json.Decode.field key valDecoder) decoder
 
-{-| Decodes a field that can be absent from a record. -}
+{-| Decodes a field that can be absent from a record. It can also handle fields with a null value. -}
 fnullable : String -> Json.Decode.Decoder a -> Json.Decode.Decoder (Maybe a -> b) -> Json.Decode.Decoder b
-fnullable key valDecoder decoder = custom (Json.Decode.nullable (Json.Decode.field key valDecoder)) decoder
+fnullable key valDecoder decoder =
+  let missingfield = Json.Decode.nullable (Json.Decode.field key valDecoder)
+      nullfield = Json.Decode.field key (Json.Decode.nullable valDecoder)
+  in  custom (Json.Decode.oneOf [missingfield, nullfield]) decoder
 
 {-| Stolen from NoRedInk's module. Run the given decoder and feed its result into the pipeline at this point. -}
 custom : Json.Decode.Decoder a -> Json.Decode.Decoder (a -> b) -> Json.Decode.Decoder b
