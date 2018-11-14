@@ -393,7 +393,7 @@ required key valDecoder decoder = custom (Json.Decode.field key valDecoder) deco
 {-| Decodes a field that can be absent from a record. It can also handle fields with a null value. -}
 fnullable : String -> Json.Decode.Decoder a -> Json.Decode.Decoder (Maybe a -> b) -> Json.Decode.Decoder b
 fnullable key valDecoder decoder =
-  let missingfield = Json.Decode.nullable (Json.Decode.field key valDecoder)
+  let missingfield = Json.Decode.maybe (Json.Decode.field key valDecoder)
       nullfield = Json.Decode.field key (Json.Decode.nullable valDecoder)
   in  custom (Json.Decode.oneOf [missingfield, nullfield]) decoder
 
